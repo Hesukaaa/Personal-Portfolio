@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react';
 const apiPort = 3001;
 
 export default defineConfig({
-  // base: '/Personal-Portfolio/',
+  base: '/Personal-Portfolio/',
 
   plugins: [
     react(),
