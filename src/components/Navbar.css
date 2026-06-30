@@ -1,0 +1,352 @@
+.navbar {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  right: auto;
+  z-index: 100;
+  width: min(1120px, calc(100% - 40px));
+  min-height: 72px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(8, 16, 34, 0.88);
+  box-shadow:
+    0 24px 90px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  transform: translateX(-50%);
+  animation: navbarDrop 0.7s ease both;
+}
+
+
+
+.menu-toggle {
+  display: none;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.menu-toggle:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.14);
+}
+
+.right-links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 28px;
+}
+
+
+
+
+
+.brand-link,
+.nav-link,
+.cv-link {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  width: fit-content;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  aspect-ratio: 1;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  background: radial-gradient(circle at top, rgba(84, 113, 255, 0.22), rgba(18, 24, 52, 0.97));
+  box-shadow: 0 0 20px rgba(90, 118, 255, 0.2);
+  color: #ffffff;
+  font-size: 13px;
+}
+
+/* NOTE: there are duplicate .right-links blocks in this file.
+   Keep the earlier definition (gap: 28px) and remove this one to avoid conflicting styles. */
+
+
+/* By default on large screens: hide the compact menu toggle and show full links */
+
+.menu-toggle {
+  display: none;
+}
+
+/* Prevent overflow and ensure the fixed navbar fits within the viewport */
+.navbar {
+  box-sizing: border-box;
+  max-width: 100vw;
+}
+
+
+@media (max-width: 980px) {
+  /* On smaller screens show the toggle in the top-right corner and hide inline links */
+  .menu-toggle {
+    display: grid;
+    position: absolute;
+    right: 14px;
+    top: 10px;
+    z-index: 120;
+  }
+
+
+  /* Hide inline right-links in navbar until toggle opens */
+  .navbar > .right-links {
+    display: none;
+  }
+
+  /* When navigation is open, use the mobile dropdown styles defined below */
+  .navbar.open > #navigation,
+  #navigation.open {
+    display: flex;
+  }
+}
+
+.nav-link {
+  position: relative;
+  padding: 8px 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition:
+    color 0.25s ease,
+    transform 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #4a95ff, #c858ff);
+  opacity: 0;
+  transform: scaleX(0.35);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.cv-link {
+  justify-self: end;
+  min-height: 42px;
+  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid rgba(119, 103, 255, 0.65);
+  border-radius: 999px;
+  background:
+    linear-gradient(#071029, #071029) padding-box,
+    linear-gradient(130deg, rgba(75, 132, 255, 0.9), rgba(189, 77, 255, 0.9)) border-box;
+  box-shadow:
+    0 0 24px rgba(68, 119, 255, 0.22),
+    0 0 32px rgba(188, 76, 255, 0.16);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+  transition:
+    box-shadow 0.25s ease,
+    transform 0.25s ease,
+    background 0.25s ease;
+}
+
+.cv-link:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 34px rgba(76, 143, 255, 0.28),
+    0 0 46px rgba(193, 79, 255, 0.24);
+}
+
+@keyframes navbarDrop {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@media (max-width: 980px) {
+  /* .navbar {
+    grid-template-columns: auto auto;
+    padding: 12px 18px;
+    border-radius: 24px;
+  } */
+
+  .menu-toggle {
+    display: grid;
+  }
+
+  /* hide desktop brand and inline links on small screens so only toggle remains visible */
+  .navbar > .brand-link,
+  .navbar > .right-links {
+    display: none;
+  }
+
+  /* Hide the inline links inside the navbar on mobile; dropdown will be anchored to the right */
+  .navbar > .right-links {
+    display: none;
+  }
+
+  /* Mobile dropdown (right-anchored) */
+  #navigation {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 14px;
+    left: auto;
+    width: min(360px, calc(100% - 36px));
+    max-height: 76vh;
+    overflow-y: auto;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 12px;
+    margin: 0;
+    border-radius: 14px;
+    background: rgba(10, 16, 34, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.32);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 120;
+    box-sizing: border-box;
+  }
+
+  #navigation.open {
+    display: flex;
+  }
+
+  /* make navbar visually minimal on small screens so only the toggle is prominent */
+  .navbar {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    min-height: 0;
+    padding: 8px 8px 12px 8px;
+  }
+
+  .nav-link {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    white-space: normal;
+    text-align: left;
+    font-size: 14px;
+    transition: background 0.18s ease;
+    box-sizing: border-box;
+    color: rgba(255,255,255,0.92);
+  }
+
+  .nav-link:hover,
+  .nav-link:focus-visible {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .cv-link {
+    min-height: 38px;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 560px) {
+  .navbar {
+    top: 10px;
+    width: calc(100% - 24px);
+    padding: 12px 16px;
+    grid-template-columns: auto auto;
+  }
+
+  /* hide desktop brand on very small screens (logo will appear inside menu) */
+  .brand-link {
+    display: none;
+  }
+
+  /* mobile brand inside dropdown */
+  .mobile-brand {
+    display: none;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 8px 0 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .mobile-brand .brand-mark {
+    width: 44px;
+    height: 44px;
+    font-size: 13px;
+  }
+
+  .mobile-brand-name {
+    font-weight: 800;
+    font-size: 15px;
+    color: #ffffff;
+  }
+
+  .cv-link {
+    min-width: 44px;
+    padding: 0;
+  }
+
+  .cv-link span {
+    display: none;
+  }
+
+  .right-links {
+    width: calc(100% - 24px);
+    left: 50%;
+  }
+
+  .nav-link {
+    font-size: 13px;
+  }
+}
