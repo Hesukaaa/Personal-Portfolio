@@ -6,6 +6,8 @@ import profileImage from "../assets/PNG3.png";
 
 import "./FrontPage.css";
 
+const WORDS = ["FRONTEND DEVELOPER", "GRAPHIC DESIGNER", "WEB DEVELOPER", "UI/UX DESIGNER"];
+
 function FrontPage() {
 
   const navigate = useNavigate();
@@ -13,14 +15,12 @@ function FrontPage() {
   const [wordIndex, setWordIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const words = ["FRONTEND DEVELOPER", "GRAPHIC DESIGNER", "WEB DEVELOPER", "UI/UX DESIGNER"];
-
   const handleEnter = () => {
     navigate("/portfolio/home");
   };
 
   useEffect(() => {
-    const currentWord = words[wordIndex];
+    const currentWord = WORDS[wordIndex];
     const timeout = setTimeout(() => {
       if (!isDeleting) {
         const nextValue = currentWord.slice(0, displayText.length + 1);
@@ -35,13 +35,13 @@ function FrontPage() {
 
         if (nextValue === "") {
           setIsDeleting(false);
-          setWordIndex((prev) => (prev + 1) % words.length);
+          setWordIndex((prev) => (prev + 1) % WORDS.length);
         }
       }
     }, isDeleting ? 70 : 110);
 
     return () => clearTimeout(timeout);
-  }, [displayText, isDeleting, wordIndex, words]);
+  }, [displayText, isDeleting, wordIndex]);
 
   return (
 

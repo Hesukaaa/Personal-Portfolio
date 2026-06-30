@@ -1,18 +1,15 @@
-import { defineConfig } from 'vite'
-import react, { reactCompilerPreset } from '@vitejs/plugin-react'
-import babel from '@rolldown/plugin-babel'
-import dotenv from 'dotenv'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-dotenv.config()
+const apiPort = 3001;
 
-const apiPort = process.env.VITE_API_PORT || process.env.SERVER_PORT || process.env.PORT || '3001'
-
-// https://vite.dev/config/
 export default defineConfig({
+  // base: '/Personal-Portfolio/',
+
   plugins: [
     react(),
-    babel({ presets: [reactCompilerPreset()] })
   ],
+
   server: {
     proxy: {
       '/api': {
@@ -21,4 +18,4 @@ export default defineConfig({
       },
     },
   },
-})
+});
