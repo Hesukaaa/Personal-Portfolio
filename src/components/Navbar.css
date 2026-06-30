@@ -1,16 +1,16 @@
-.navbar {
-  position: fixed;
+ .navbar {
+ position: fixed;
   top: 18px;
   left: 50%;
-  right: auto;
   z-index: 100;
-  width: min(1120px, calc(100% - 40px));
+  width: min(1120px, calc(100% - 36px));
   min-height: 72px;
-  margin: 0 auto;
+  margin: 0;
   padding: 16px 24px;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
+  justify-content: space-between;
   gap: 18px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 999px;
@@ -22,8 +22,6 @@
   transform: translateX(-50%);
   animation: navbarDrop 0.7s ease both;
 }
-
-
 
 .menu-toggle {
   display: none;
@@ -52,7 +50,10 @@
   gap: 28px;
 }
 
-
+/* Ensure CV stays at the end of the right-links block */
+.cv-link {
+  justify-self: end;
+}
 
 
 
