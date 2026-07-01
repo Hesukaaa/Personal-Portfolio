@@ -16,7 +16,7 @@ function FrontPage() {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleEnter = () => {
-    navigate("/portfolio/home");
+    navigate("/home");
   };
 
   useEffect(() => {
