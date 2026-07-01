@@ -24,7 +24,12 @@ function ContactSection() {
 
     try {
       const rawApiUrl = (import.meta.env.VITE_API_URL as string) || "";
-      const apiUrl = rawApiUrl.startsWith("http") ? rawApiUrl : "/api/contact";
+      const baseUrl = import.meta.env.BASE_URL || "";
+      const normalizedBaseUrl = baseUrl.replace(/\/+$/, "");
+      const apiUrl = rawApiUrl.startsWith("http")
+        ? rawApiUrl
+        : `${normalizedBaseUrl || ""}/api/contact`;
+
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
