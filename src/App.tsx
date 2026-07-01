@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
+import AiAssistant from "./components/AiAssistant";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -25,11 +26,14 @@ function PortfolioLayout() {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Frontpage />} />
+    <>
+      <AiAssistant />
+      <Routes>
+        <Route path="/" element={<Frontpage />} />
 
-      <Route path="/*" element={<PortfolioLayout />} />
-    </Routes>
+        <Route path="/*" element={<PortfolioLayout />} />
+      </Routes>
+    </>
   );
 }
 
