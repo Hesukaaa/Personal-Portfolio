@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import AboutSection from "../sections/AboutSection";
 import ContactSection from "../sections/ContactSection";
 import FooterSection from "../sections/FooterSection";
@@ -9,6 +10,18 @@ import ServicesSection from "../sections/ServicesSection";
 import "./Home.css";
 
 function Home() {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace("#", "");
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [location.hash]);
+
   useEffect(() => {
     const sections = document.querySelectorAll(".section-block");
 
