@@ -22,6 +22,8 @@ jobs:
 
       - run: npm ci
       - run: npm run build
+        env:
+          VITE_BASE_URL: /Personal-Portfolio/
 
       - name: Prepare SPA fallback
         run: cp dist/index.html dist/404.html
