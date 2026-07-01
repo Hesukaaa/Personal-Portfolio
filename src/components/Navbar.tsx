@@ -8,25 +8,34 @@ import "./Navbar.css";
 const CV_FILE_NAME = "Joel-Dibdib-CV.pdf";
 const CV_FILE_PATH = cvImage;
 
-function downloadCv() {
+async function downloadCv() {
   if (typeof window === "undefined") return;
 
-  const img = new Image();
-  img.src = cvImage;
-  img.crossOrigin = "anonymous";
+  try {
+    const response = await fetch(cvImage);
+    if (!response.ok) throw new Error(`Failed to fetch CV image: ${response.statusText}`);
 
-  img.onload = () => {
-    const pdf = new jsPDF({ orientation: "portrait", unit: "px", format: [img.width, img.height] });
-    pdf.addImage(img, "PNG", 0, 0, img.width, img.height);
+    const blob = await response.blob();
+    const objectUrl = URL.createObjectURL(blob);
+
+    const img = new Image();
+    img.src = objectUrl;
+
+    await new Promise<void>((resolve, reject) => {
+      img.onload = () => resolve();
+      img.onerror = () => reject(new Error("Unable to load CV image."));
+    });
+
+    const pdf = new jsPDF({ orientation: "portrait", unit: "px", format: [img.naturalWidth, img.naturalHeight] });
+    pdf.addImage(img, "PNG", 0, 0, img.naturalWidth, img.naturalHeight);
     pdf.save(CV_FILE_NAME);
-  };
-
-  img.onerror = () => {
+    URL.revokeObjectURL(objectUrl);
+  } catch (error) {
     const anchor = document.createElement("a");
     anchor.href = cvImage;
     anchor.download = "CV.png";
     anchor.click();
-  };
+  }
 }
 
 function Navbar() {
