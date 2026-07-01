@@ -5,7 +5,8 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import App from './App'
 
-const basename = import.meta.env.PROD ? '/Personal-Portfolio' : '/'
+const rawBaseUrl = import.meta.env.BASE_URL;
+const basename = rawBaseUrl === '/' ? '/' : rawBaseUrl.replace(/\/$/, '');
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
