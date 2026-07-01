@@ -14,7 +14,7 @@ function Navbar() {
 
   return (
     <nav className={`navbar ${menuOpen ? "open" : ""}`}>
-      <Link className="brand-link" to="/portfolio/home#home" aria-label="Joel Dibdib portfolio home">
+      <Link className="brand-link" to="/home#home" aria-label="Joel Dibdib portfolio home">
         <span className="brand-mark">JD</span>
         <span>Joel Dibdib</span>
       </Link>
@@ -24,22 +24,22 @@ function Navbar() {
           <span className="brand-mark">JD</span>
           <span className="mobile-brand-name">Joel Dibdib</span>
         </div> */}
-        <Link className="nav-link" to="/portfolio/home#home" onClick={closeMenu}>
+        <Link className="nav-link" to="/home#home" onClick={closeMenu}>
           Home
         </Link>
-        <Link className="nav-link" to="/portfolio/home#about" onClick={closeMenu}>
+        <Link className="nav-link" to="/home#about" onClick={closeMenu}>
           About
         </Link>
-        <Link className="nav-link" to="/portfolio/home#skills" onClick={closeMenu}>
+        <Link className="nav-link" to="/home#skills" onClick={closeMenu}>
           Skills
         </Link>
-        <Link className="nav-link" to="/portfolio/home#services" onClick={closeMenu}>
+        <Link className="nav-link" to="/home#services" onClick={closeMenu}>
           Services
         </Link>
-        <Link className="nav-link" to="/portfolio/home#projects" onClick={closeMenu}>
+        <Link className="nav-link" to="/home#projects" onClick={closeMenu}>
           Projects
         </Link>
-        <Link className="nav-link" to="/portfolio/home#contact" onClick={closeMenu}>
+        <Link className="nav-link" to="/home#contact" onClick={closeMenu}>
           Contact
         </Link>
         <a

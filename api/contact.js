@@ -3,10 +3,15 @@ import sgMail from '@sendgrid/mail';
 
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY?.trim();
 const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY?.trim();
-const MAILGUN_DOMAIN = process.env.MAILGUN_DOMAIN?.trim();
+const sanitizeDomain = (value) => value?.trim().replace(/^https?:\/\//, '').replace(/\/+$/, '') ?? '';
+const sanitizeUrl = (value) => value?.trim().replace(/\/+$/, '') ?? '';
+const MAILGUN_DOMAIN = sanitizeDomain(process.env.MAILGUN_DOMAIN);
+const MAILGUN_BASE_URL = sanitizeUrl(process.env.MAILGUN_BASE_URL) || 'https://api.mailgun.net/v3';
 const SMTP_USER = process.env.GMAIL_USER?.trim();
 const SMTP_PASS = process.env.GMAIL_APP_PASSWORD?.trim();
-const TO_EMAIL = process.env.CONTACT_RECIPIENT?.trim() || 'dibdibjoel4@gmail.com';
+const MAILGUN_FROM = process.env.MAILGUN_FROM?.trim();
+const SENDGRID_FROM = process.env.SENDGRID_FROM?.trim();
+const TO_EMAIL = process.env.CONTACT_RECIPIENT?.trim() || process.env.TO_EMAIL?.trim() || 'dibdibjoel4@gmail.com';
 
 if (SENDGRID_API_KEY) {
   sgMail.setApiKey(SENDGRID_API_KEY);
@@ -39,9 +44,11 @@ function buildEmailBody({ name, email, message }) {
 async function sendViaSendGrid({ name, email, message }) {
   const body = buildEmailBody({ name, email, message });
 
+  const fromAddress = SENDGRID_FROM || SMTP_USER || TO_EMAIL;
+
   await sgMail.send({
     to: TO_EMAIL,
-    from: SMTP_USER || TO_EMAIL,
+    from: fromAddress,
     replyTo: email,
     subject: body.subject,
     text: body.text,
@@ -51,7 +58,8 @@ async function sendViaSendGrid({ name, email, message }) {
 
 async function sendViaMailgun({ name, email, message }) {
   const form = new URLSearchParams();
-  form.append('from', `Portfolio Contact <${email}>`);
+  const fromAddress = MAILGUN_FROM || `Portfolio Contact <postmaster@${MAILGUN_DOMAIN}>`;
+  form.append('from', fromAddress);
   form.append('to', TO_EMAIL);
   form.append('subject', `New portfolio message from ${name}`);
   form.append('text', [
@@ -60,9 +68,18 @@ async function sendViaMailgun({ name, email, message }) {
     '',
     message,
   ].join('\n'));
+  form.append('h:Reply-To', email);
+  form.append('html', `
+    <h3>New portfolio message</h3>
+    <p><strong>Name:</strong> ${name}</p>
+    <p><strong>Email:</strong> ${email}</p>
+    <p><strong>Message:</strong></p>
+    <p>${message.replace(/\n/g, '<br />')}</p>
+  `);
 
   const auth = Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64');
-  const response = await fetch(`https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`, {
+  const apiUrl = `${MAILGUN_BASE_URL}/${MAILGUN_DOMAIN}/messages`;
+  const response = await fetch(apiUrl, {
     method: 'POST',
     headers: {
       Authorization: `Basic ${auth}`,
@@ -73,7 +90,13 @@ async function sendViaMailgun({ name, email, message }) {
 
   if (!response.ok) {
     const text = await response.text();
-    throw new Error(`Mailgun error: ${text}`);
+    console.error('Mailgun response status:', response.status, 'body:', text);
+    if (response.status === 401 || response.status === 403) {
+      throw new Error(
+        'Mailgun authentication failed. Verify MAILGUN_API_KEY, MAILGUN_DOMAIN, and whether your recipient is authorized for a sandbox domain.'
+      );
+    }
+    throw new Error(`Mailgun error: ${response.status} ${text}`);
   }
 }
 
@@ -134,7 +157,16 @@ export default async function handler(req, res) {
     if (isSendGridEnabled) {
       await sendViaSendGrid({ name, email, message });
     } else if (isMailgunEnabled) {
-      await sendViaMailgun({ name, email, message });
+      try {
+        await sendViaMailgun({ name, email, message });
+      } catch (mailgunError) {
+        console.error('Mailgun failed, falling back to SMTP:', mailgunError);
+        if (isSmtpEnabled) {
+          await sendViaSmtp({ name, email, message });
+        } else {
+          throw mailgunError;
+        }
+      }
     } else {
       await sendViaSmtp({ name, email, message });
     }
@@ -144,7 +176,10 @@ export default async function handler(req, res) {
     console.error('Contact API error:', error);
     res.status(500).json({
       success: false,
-      message: 'Unable to send message at this time. Please email me directly.',
+      message:
+        isMailgunEnabled && isSmtpEnabled
+          ? 'Mailgun failed and SMTP could not send the message. Check your email configs.'
+          : 'Unable to send message at this time. Please email me directly.',
     });
   }
 }
