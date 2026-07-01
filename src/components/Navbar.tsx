@@ -1,22 +1,32 @@
 import { useState } from "react";
 import { FiDownload, FiMenu, FiX } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import { jsPDF } from "jspdf";
+import cvImage from "../assets/CV.png";
 import "./Navbar.css";
 
 const CV_FILE_NAME = "Joel-Dibdib-CV.pdf";
-const CV_FILE_PATH = `/${CV_FILE_NAME}`;
+const CV_FILE_PATH = cvImage;
 
 function downloadCv() {
   if (typeof window === "undefined") return;
 
-  const anchor = document.createElement("a");
-  anchor.href = CV_FILE_PATH;
-  anchor.download = CV_FILE_NAME;
-  anchor.target = "_blank";
-  anchor.rel = "noopener noreferrer";
-  document.body.appendChild(anchor);
-  anchor.click();
-  document.body.removeChild(anchor);
+  const img = new Image();
+  img.src = cvImage;
+  img.crossOrigin = "anonymous";
+
+  img.onload = () => {
+    const pdf = new jsPDF({ orientation: "portrait", unit: "px", format: [img.width, img.height] });
+    pdf.addImage(img, "PNG", 0, 0, img.width, img.height);
+    pdf.save(CV_FILE_NAME);
+  };
+
+  img.onerror = () => {
+    const anchor = document.createElement("a");
+    anchor.href = cvImage;
+    anchor.download = "CV.png";
+    anchor.click();
+  };
 }
 
 function Navbar() {
