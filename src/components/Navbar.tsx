@@ -1,42 +1,10 @@
 import { useState } from "react";
 import { FiDownload, FiMenu, FiX } from "react-icons/fi";
 import { Link } from "react-router-dom";
-import { jsPDF } from "jspdf";
-import cvImage from "../assets/CV.png";
 import "./Navbar.css";
 
 const CV_FILE_NAME = "Joel-Dibdib-CV.pdf";
-const CV_FILE_PATH = cvImage;
-
-async function downloadCv() {
-  if (typeof window === "undefined") return;
-
-  try {
-    const response = await fetch(cvImage);
-    if (!response.ok) throw new Error(`Failed to fetch CV image: ${response.statusText}`);
-
-    const blob = await response.blob();
-    const objectUrl = URL.createObjectURL(blob);
-
-    const img = new Image();
-    img.src = objectUrl;
-
-    await new Promise<void>((resolve, reject) => {
-      img.onload = () => resolve();
-      img.onerror = () => reject(new Error("Unable to load CV image."));
-    });
-
-    const pdf = new jsPDF({ orientation: "portrait", unit: "px", format: [img.naturalWidth, img.naturalHeight] });
-    pdf.addImage(img, "PNG", 0, 0, img.naturalWidth, img.naturalHeight);
-    pdf.save(CV_FILE_NAME);
-    URL.revokeObjectURL(objectUrl);
-  } catch (error) {
-    const anchor = document.createElement("a");
-    anchor.href = cvImage;
-    anchor.download = "CV.png";
-    anchor.click();
-  }
-}
+const CV_FILE_PATH = `${import.meta.env.BASE_URL}CV.pdf`;
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -77,11 +45,8 @@ function Navbar() {
         <a
           className="cv-link"
           href={CV_FILE_PATH}
-          onClick={(event) => {
-            event.preventDefault();
-            downloadCv();
-            closeMenu();
-          }}
+          download={CV_FILE_NAME}
+          onClick={closeMenu}
           aria-label="Download CV"
         >
           <span>Download CV</span>
