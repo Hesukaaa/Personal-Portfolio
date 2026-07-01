@@ -31,19 +31,27 @@ function ContactSection() {
         body: JSON.stringify(formData),
       });
 
-      const result = await response.json();
+      const text = await response.text();
+      const result = response.headers
+        .get("content-type")
+        ?.includes("application/json")
+        ? JSON.parse(text)
+        : null;
 
-      if (!response.ok || !result.success) {
-        throw new Error(result.message || "Unable to send message.");
+      if (!response.ok || !result?.success) {
+        const message = result?.message || text || "Unable to send your message.";
+        throw new Error(message);
       }
 
       setStatus("success");
-      setFeedback("Your message has been sent successfully.");
+      setFeedback("Thank you — I’ll review your request and reply shortly.");
       setFormData({ name: "", email: "", message: "" });
     } catch (error) {
       setStatus("error");
       setFeedback(
-        error instanceof Error ? error.message : "Something went wrong."
+        error instanceof Error
+          ? error.message
+          : "Unable to send your message. Please try again or email me directly."
       );
     }
   };
@@ -52,10 +60,10 @@ function ContactSection() {
     <section id="contact" className="contact-panel section-block">
       <div className="contact-copy">
         <p className="section-kicker">Contact</p>
-        <h2>Ready To Build Something Memorable?</h2>
+        <h2>Ready to turn your vision into a polished product?</h2>
         <p>
-          Send a message and let&apos;s turn your idea into a clean, modern web
-          experience.
+          Share your project details and I’ll follow up with a clear plan to build
+          a clean, responsive website that reflects your brand.
         </p>
 
         <div className="contact-list">
@@ -65,11 +73,11 @@ function ContactSection() {
           </a>
           <a href="tel:+639273535464">
             <FiPhone />
-            09273535464
+            +63 927 353 5464
           </a>
           <span>
             <FiMapPin />
-            Dalaguete, Cebu Philippines
+            Dalaguete, Cebu, Philippines
           </span>
         </div>
       </div>
