@@ -235,13 +235,20 @@ const handler = async (req, res) => {
   sendJson(res, 404, { success: false, message: 'Not found' });
 };
 
-function startServer(portToUse) {
+function startServer(portToUse, attemptsLeft = 5) {
   const server = http.createServer(handler);
 
   server.on('error', (error) => {
     if (error && typeof error === 'object' && 'code' in error && error.code === 'EADDRINUSE') {
-      console.error(`Port ${portToUse} is already in use. Please stop the process using that port or change PORT in .env and restart.`);
-      process.exit(1);
+      console.error(`Port ${portToUse} is already in use.`);
+      if (attemptsLeft <= 1) {
+        console.error(`No available port found after multiple attempts. Stop the process using that port or set PORT/SERVER_PORT in .env.`);
+        process.exit(1);
+      }
+      const nextPort = portToUse + 1;
+      console.log(`Trying port ${nextPort}...`);
+      startServer(nextPort, attemptsLeft - 1);
+      return;
     }
 
     console.error(error);
