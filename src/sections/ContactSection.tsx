@@ -23,7 +23,8 @@ function ContactSection() {
     setFeedback("");
 
     try {
-      const response = await fetch("/api/contact", {
+      const apiUrl = (import.meta.env.VITE_API_URL as string) || "/api/contact";
+      const response = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
