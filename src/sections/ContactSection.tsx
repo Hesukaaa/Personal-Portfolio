@@ -23,7 +23,8 @@ function ContactSection() {
     setFeedback("");
 
     try {
-      const apiUrl = (import.meta.env.VITE_API_URL as string) || "/api/contact";
+      const rawApiUrl = (import.meta.env.VITE_API_URL as string) || "";
+      const apiUrl = rawApiUrl.startsWith("http") ? rawApiUrl : "/api/contact";
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
