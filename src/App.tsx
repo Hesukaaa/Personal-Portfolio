@@ -26,7 +26,7 @@ function PortfolioLayout() {
 function App() {
   return (
     <Routes>
-      <Route path="/*" element={<Frontpage />} />
+      <Route path="/" element={<Frontpage />} />
 
       <Route path="/portfolio/*" element={<PortfolioLayout />} />
     </Routes>
